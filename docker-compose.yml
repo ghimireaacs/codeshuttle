@@ -5,10 +5,12 @@ services:
       args:
         - PUID=1000
         - PGID=1000
-    container_name: python_pastebin
+    container_name: codeshuttle
     ports:
       - "5000:8000" # Map port 5000 on your computer to port 8000 in the container
+    environment:
+      - DATA_DIR=/app/data
     volumes:
       # This links the local 'data' folder to the '/app/data' folder in the container
-      - ./data:/app/data
+      - /home/ghost/ghostsilo/20_Temporary/:/app/data
     restart: unless-stopped

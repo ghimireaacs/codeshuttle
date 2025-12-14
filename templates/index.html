@@ -4,297 +4,367 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeShuttle</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme') || 
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      })();
+    </script>
+
     <style>
       :root {
-        --bg-color: #f4f7f9;
-        --surface-color: #ffffff;
-        --text-color: #333333;
-        --muted-text-color: #777777;
-        --border-color: #e0e0e0;
-        --primary-color: #3b82f6;
-        --primary-hover-color: #2563eb;
-        --shadow-color: rgba(0, 0, 0, 0.05);
+        /* --- POP BRUTALIST PALETTE --- */
+        --bg: #fff7ed;            /* Warm off-white */
+        --surface: #ffffff;
+        --border: #18181b;        /* Almost black */
+        --text: #18181b;
+        
+        /* Vibrant Accents */
+        --color-yellow: #facc15;
+        --color-orange: #fb923c;
+        --color-green: #4ade80;
+        --color-purple: #c084fc;
+        
+        --border-width: 3px;
+        --shadow: 4px 4px 0 var(--border);
+        --radius: 8px;
       }
-      body.theme-dark {
-        --bg-color: #111827;
-        --surface-color: #1f2937;
-        --text-color: #f9fafb;
-        --muted-text-color: #9ca3af;
-        --border-color: #374151;
-        --shadow-color: rgba(0, 0, 0, 0.2);
+
+      [data-theme="dark"] {
+        --bg: #18181b;            /* Dark background */
+        --surface: #27272a;       /* Dark grey surface */
+        --border: #f4f4f5;        /* White borders */
+        --text: #f4f4f5;
+        
+        /* Adjust accents for dark mode readability */
+        --color-yellow: #eab308;
+        --color-orange: #f97316;
+        --color-green: #22c55e;
       }
+
+      /* --- ANIMATIONS --- */
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes popIn {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      /* --- RESET --- */
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        line-height: 1.6;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+        font-family: 'Lexend', sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
         margin: 0;
-        padding: 2em;
-        transition: background-color 0.3s, color 0.3s;
+        padding: 2rem 1rem;
+        transition: background 0.3s ease;
       }
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: var(--surface-color);
-        padding: 2em;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px var(--shadow-color);
-        transition: background-color 0.3s;
+
+      .container { max-width: 750px; margin: 0 auto; }
+
+      /* --- UTILS --- */
+      .brutal-card {
+        background: var(--surface);
+        border: var(--border-width) solid var(--border);
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+        transition: transform 0.2s, box-shadow 0.2s;
       }
+
+      /* --- HEADER --- */
       header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5em;
-      }
-      h1,
-      h2 {
-        margin: 0;
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 2rem;
       }
       h1 {
-        font-size: 1.75em;
+        font-weight: 800; font-size: 2rem; margin: 0;
+        text-transform: uppercase; letter-spacing: -1px;
+        text-shadow: 2px 2px 0 var(--color-yellow);
+        display: flex; align-items: center; gap: 10px;
       }
-      h2 {
-        font-size: 1.25em;
-        color: var(--text-color);
-      }
-      h1 .fa-space-shuttle {
-        color: var(--primary-color);
-        margin-right: 0.5em;
-      }
-      #theme-toggle {
-        background: none;
-        border: 1px solid var(--border-color);
-        color: var(--muted-text-color);
-        font-size: 1em;
-        width: 40px;
-        height: 40px;
+      h1 i { color: var(--color-orange); }
+
+      .theme-toggle {
+        width: 45px; height: 45px;
+        background: var(--color-yellow);
+        border: var(--border-width) solid var(--border);
         border-radius: 50%;
         cursor: pointer;
-        transition: background-color 0.2s, color 0.2s;
+        display: grid; place-items: center;
+        font-size: 1.2rem;
+        box-shadow: 2px 2px 0 var(--border);
+        transition: transform 0.2s;
       }
-      #theme-toggle:hover {
-        background-color: var(--bg-color);
-        color: var(--text-color);
+      .theme-toggle:hover { transform: rotate(15deg) scale(1.1); }
+      .theme-toggle:active { transform: scale(0.9); }
+
+      /* --- INPUT AREA --- */
+      .input-area {
+        padding: 1rem; margin-bottom: 2.5rem;
+        animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
-      .display-area,
-      .edit-area {
-        border-top: 1px solid var(--border-color);
-        padding-top: 1.5em;
-        margin-top: 1.5em;
-      }
-      .area-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1em;
-      }
-      #copy-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5em;
-        background-color: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--muted-text-color);
-        padding: 0.4em 0.8em;
-        border-radius: 8px;
-        cursor: pointer;
+
+      textarea {
+        width: 100%; height: 110px; padding: 1rem;
+        box-sizing: border-box;
+        border: var(--border-width) solid var(--border);
+        background: var(--bg); color: var(--text);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.95rem;
+        border-radius: 6px;
+        outline: none;
+        resize: vertical;
         transition: all 0.2s;
       }
-      #copy-button:hover {
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-      }
-      pre {
-        background-color: var(--bg-color);
-        padding: 1em;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        margin: 0;
-        max-height: 300px;
-        overflow-y: auto;
-      }
-      textarea {
-        width: 100%;
-        height: 250px;
-        padding: 1em;
-        box-sizing: border-box;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 1em;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        resize: vertical;
-        transition: background-color 0.3s, color 0.3s;
-      }
       textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px
-          var(--primary-color_alpha, rgba(59, 130, 246, 0.2));
+        background: var(--surface);
+        box-shadow: 3px 3px 0 var(--color-purple);
       }
-      .save-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5em;
-        padding: 0.7em 1.5em;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-weight: 500;
-        transition: background-color 0.2s;
+
+      .controls { display: flex; gap: 1rem; margin-top: 1rem; }
+
+      .btn, .file-label {
+        border: var(--border-width) solid var(--border);
+        padding: 0.8rem 1.5rem;
+        font-weight: 700; text-transform: uppercase;
+        cursor: pointer; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        box-shadow: 3px 3px 0 var(--border);
+        transition: all 0.1s;
       }
-      .save-button:hover {
-        background-color: var(--primary-hover-color);
+      .btn:active, .file-label:active {
+        transform: translate(3px, 3px);
+        box-shadow: 0 0 0 transparent;
       }
-      footer {
-        text-align: center;
-        margin-top: 3em;
-        padding-top: 1.5em;
-        border-top: 1px solid var(--border-color);
-        font-size: 0.9em;
-        color: var(--muted-text-color);
+
+      .btn-primary {
+        background: var(--color-orange);
+        color: #000;
+        flex-grow: 0;
       }
-      footer a {
-        color: var(--muted-text-color);
+      .btn-primary:hover { background: #ff8c00; }
+
+      .file-label {
+        background: var(--surface);
+        color: var(--text);
+        flex-grow: 1;
+      }
+      .file-label:hover { background: var(--color-yellow); color: #000; }
+      .file-label.active {
+        background: var(--color-green);
+        color: #000;
+      }
+
+      /* --- FEED --- */
+      .paste-card {
+        margin-bottom: 1.5rem;
+        animation: slideUp 0.4s ease-out forwards;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+      }
+      .paste-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 var(--border);
+      }
+
+      .paste-header {
+        background: var(--border);
+        color: var(--bg); /* Inverted contrast */
+        padding: 0.6rem 1rem;
+        display: flex; justify-content: space-between; align-items: center;
+        font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      }
+      
+      [data-theme="dark"] .paste-header {
+        background: var(--color-purple);
+        color: #000;
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .paste-content { padding: 1.2rem; position: relative; }
+
+      /* Action Buttons */
+      .action-group { display: flex; gap: 10px; }
+      .icon-btn {
+        background: none; border: none; cursor: pointer;
+        color: inherit; opacity: 0.7; transition: opacity 0.2s, transform 0.2s;
+      }
+      .icon-btn:hover { opacity: 1; transform: scale(1.2); }
+
+      /* Attachments */
+      .file-tag {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--color-green);
+        color: #000;
+        border: 2px solid var(--border);
+        padding: 6px 12px;
+        border-radius: 20px; /* Pill shape */
         text-decoration: none;
-        margin: 0 10px;
-        transition: color 0.2s;
+        font-weight: 700; font-size: 0.85rem;
+        margin-bottom: 1rem;
+        box-shadow: 2px 2px 0 var(--border);
+        transition: transform 0.2s;
       }
-      footer a:hover {
-        color: var(--primary-color);
+      .file-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: 3px 3px 0 var(--border);
       }
-      footer .fa-brands {
-        margin-right: 0.3em;
+
+      /* Code Blocks */
+      pre {
+        margin: 0; white-space: pre-wrap; word-break: break-all;
+        font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
       }
+      
+      details summary {
+        cursor: pointer; font-weight: 700;
+        color: var(--color-purple);
+        margin-bottom: 0.5rem;
+      }
+      [data-theme="dark"] details summary { color: var(--color-yellow); }
+
+      /* --- TOAST --- */
+      #toast {
+        visibility: hidden;
+        min-width: 200px;
+        background-color: var(--color-green);
+        color: #000;
+        text-align: center;
+        padding: 12px;
+        position: fixed; z-index: 10;
+        left: 50%; bottom: 30px;
+        transform: translateX(-50%);
+        font-weight: 800; text-transform: uppercase;
+        border: 3px solid #000;
+        box-shadow: 4px 4px 0 #000;
+        opacity: 0; transition: all 0.3s;
+      }
+      #toast.show { visibility: visible; bottom: 50px; opacity: 1; }
+
       @media (max-width: 600px) {
-        body {
-          padding: 1em;
-        }
-        .container {
-          padding: 1.5em;
-        }
-        h1 {
-          font-size: 1.5em;
-        }
+        .controls { flex-direction: column; }
+        .file-label { width: 100%; box-sizing: border-box; }
+        h1 { font-size: 1.5rem; }
       }
     </style>
   </head>
-  <body class="theme-light">
+  <body>
     <div class="container">
       <header>
-        <h1><i class="fas fa-space-shuttle"></i> CodeShuttle</h1>
-        <button id="theme-toggle" title="Toggle theme">
+        <h1><i class="fas fa-rocket"></i> Shuttle_</h1>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Switch Mode">
           <i class="fas fa-sun"></i>
         </button>
       </header>
 
-      <div class="display-area">
-        <div class="area-header">
-          <h2>Saved Text</h2>
-          <button id="copy-button" title="Copy to clipboard">
-            <i class="far fa-copy"></i>
-            <span>Copy</span>
-          </button>
-        </div>
-        <pre id="saved-content">{{ current_text }}</pre>
+      <div class="brutal-card input-area">
+        <form method="post" enctype="multipart/form-data">
+          <textarea name="content" placeholder="Drop your code snippets or logs here..."></textarea>
+          
+          <div class="controls">
+            <label class="file-label" id="file-drop-zone">
+              <input type="file" name="file" style="display:none" onchange="handleFileSelect(this)">
+              <i class="fas fa-paperclip"></i>
+              <span id="file-name">Attach File</span>
+            </label>
+            <button class="btn btn-primary" type="submit">
+              Launch <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
       </div>
 
-      <div class="edit-area">
-        <div class="area-header">
-          <h2>Edit Text</h2>
+      <div id="feed">
+        {% for paste in pastes %}
+        <div class="brutal-card paste-card" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+          <div class="paste-header">
+            <span>ID: {{ paste.id }} // {{ paste.timestamp }}</span>
+            <div class="action-group">
+                {% if paste.content %}
+                <button class="icon-btn" onclick="copyToClipboard(`{{ paste.content }}`)" title="Copy">
+                    <i class="fas fa-copy"></i>
+                </button>
+                {% endif %}
+                <form action="{{ url_for('delete_paste', id=paste.id) }}" method="post" style="margin:0">
+                    <button class="icon-btn" onclick="return confirm('Nuke this item?')" title="Delete">
+                        <i class="fas fa-bomb"></i>
+                    </button>
+                </form>
+            </div>
+          </div>
+
+          <div class="paste-content">
+            {% if paste.filename %}
+            <a href="{{ url_for('uploaded_file', filename=paste.filename) }}" target="_blank" class="file-tag">
+                <i class="fas fa-file"></i> {{ paste.filename }}
+            </a>
+            {% endif %}
+
+            {% if paste.content %}
+                {% if paste.content.count('\n') > 6 or paste.content|length > 400 %}
+                    <details>
+                        <summary>Show Content <i class="fas fa-level-down-alt"></i></summary>
+                        <pre>{{ paste.content }}</pre>
+                    </details>
+                {% else %}
+                    <pre>{{ paste.content }}</pre>
+                {% endif %}
+            {% endif %}
+          </div>
         </div>
-        <form method="post">
-          <textarea
-            name="content"
-            placeholder="Shuttle your text or code here..."
-          >
-{{ current_text }}</textarea
-          >
-          <br /><br />
-          <button type="submit" class="save-button">
-            <i class="fas fa-save"></i> Save
-          </button>
-        </form>
+        {% endfor %}
       </div>
     </div>
 
-    <footer>
-      <a
-        href="https://github.com/ghimireaacs"
-        target="_blank"
-        rel="noopener noreferrer"
-        ><i class="fab fa-github"></i> GitHub</a
-      >
-      •
-      <a
-        href="https://ko-fi.com/ghimireaacs"
-        target="_blank"
-        rel="noopener noreferrer"
-        ><i class="fas fa-mug-hot"></i> Support on Ko-fi</a
-      >
-    </footer>
+    <div id="toast"><i class="fas fa-check"></i> Copied!</div>
 
     <script>
-      const themeToggleButton = document.getElementById("theme-toggle");
-      const body = document.body;
-      const themeIcon = themeToggleButton.querySelector("i");
-      const copyButton = document.getElementById("copy-button");
-      const copyButtonText = copyButton.querySelector("span");
-      const copyButtonIcon = copyButton.querySelector("i");
-      const savedContent = document.getElementById("saved-content");
-
-      function applyTheme(theme) {
-        if (theme === "dark") {
-          body.classList.replace("theme-light", "theme-dark");
-          themeIcon.classList.replace("fa-sun", "fa-moon");
-        } else {
-          body.classList.replace("theme-dark", "theme-light");
-          themeIcon.classList.replace("fa-moon", "fa-sun");
-        }
-        localStorage.setItem("theme", theme);
+      function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
       }
 
-      themeToggleButton.addEventListener("click", () => {
-        const newTheme = body.classList.contains("theme-light")
-          ? "dark"
-          : "light";
-        applyTheme(newTheme);
+      function updateIcon(theme) {
+        const icon = document.querySelector('.theme-toggle i');
+        icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        updateIcon(theme);
       });
 
-      copyButton.addEventListener("click", () => {
-        if (!navigator.clipboard) return;
-        navigator.clipboard.writeText(savedContent.innerText).then(() => {
-          copyButtonText.innerText = "Copied!";
-          copyButtonIcon.classList.replace("fa-copy", "fa-check");
-          setTimeout(() => {
-            copyButtonText.innerText = "Copy";
-            copyButtonIcon.classList.replace("fa-check", "fa-copy");
-          }, 2000);
-        });
-      });
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)"
-        ).matches;
-        if (savedTheme) {
-          applyTheme(savedTheme);
-        } else if (prefersDark) {
-          applyTheme("dark");
+      function handleFileSelect(input) {
+        const fileNameSpan = document.getElementById('file-name');
+        const container = document.getElementById('file-drop-zone');
+        if (input.files && input.files.length > 0) {
+            fileNameSpan.textContent = input.files[0].name;
+            container.classList.add('active');
+        } else {
+            fileNameSpan.textContent = "Attach File";
+            container.classList.remove('active');
         }
-      });
+      }
+
+      function copyToClipboard(text) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(() => { toast.className = ""; }, 2000);
+        });
+      }
     </script>
   </body>
 </html>
