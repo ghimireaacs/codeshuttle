@@ -20,7 +20,7 @@ It supports text snippets, logs, and file attachments, with a modern brutalist-i
 
 ## Screenshot
 
-![CodeShuttle Screenshot](static/screenshot.gif)
+![CodeShuttle Screenshot](screenshot.gif)
 
 ---
 
